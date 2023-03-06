@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>helpers.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>helpers.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Description:
+This is the module containing the helpers that make petitions to
+the weather API</p>
+<p>Developed by: Jose D. Hernandez-Betancur</p>
+<p>Date: March 5, 2023</p>
+<p>Colapse columns source:
+https://github.com/jamesshocking/collapse-spark-dataframe/blob/main/collapse_dataframe.py</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Importing libraries</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">requests.exceptions</span> <span class="kn">import</span> <span class="n">ReadTimeout</span><span class="p">,</span> <span class="n">ConnectTimeout</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">StructType</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">col</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>This is the class used to retrieve the weather data</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">WeatherAPI</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://weatherapi-com.p.rapidapi.com/current.json&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;X-RapidAPI-Key&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;RAPIDAPI_KEY&#39;</span><span class="p">],</span>
+                        <span class="s2">&quot;X-RapidAPI-Host&quot;</span><span class="p">:</span> <span class="s2">&quot;weatherapi-com.p.rapidapi.com&quot;</span><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Method to get the weather data per city name</p>
+<p>Args:
+  - lat (float): The city latitude for the searching
+  - lng (float): The city longitude for the searching
+Output:
+  - result_dict (dictionary): Dictionary with the results</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_weather_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lng</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">try</span><span class="p">:</span>
+
+            <span class="n">querystring</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;q&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lat</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">lng</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+                                        <span class="n">headers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">headers</span><span class="p">,</span>
+                                        <span class="n">params</span><span class="o">=</span><span class="n">querystring</span><span class="p">,</span>
+                                        <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+
+                <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+                <span class="n">result_dict</span> <span class="o">=</span> <span class="p">{</span>
+                          <span class="s1">&#39;temp_c&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;current&#39;</span><span class="p">][</span><span class="s1">&#39;temp_c&#39;</span><span class="p">],</span>
+                          <span class="s1">&#39;is_day&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;current&#39;</span><span class="p">][</span><span class="s1">&#39;is_day&#39;</span><span class="p">]</span>
+                        <span class="p">}</span>
+                <span class="n">result_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;current&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                              <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;wind_mph&#39;</span><span class="p">,</span> <span class="s1">&#39;wind_kph&#39;</span><span class="p">,</span> <span class="s1">&#39;wind_degree&#39;</span><span class="p">,</span> <span class="s1">&#39;wind_dir&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;pressure_mb&#39;</span><span class="p">,</span> <span class="s1">&#39;pressure_in&#39;</span><span class="p">,</span> <span class="s1">&#39;precip_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;precip_in&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;humidity&#39;</span><span class="p">,</span> <span class="s1">&#39;cloud&#39;</span><span class="p">,</span> <span class="s1">&#39;feelslike_c&#39;</span><span class="p">,</span> <span class="s1">&#39;feelslike_f&#39;</span><span class="p">,</span>
+                                          <span class="s1">&#39;vis_km&#39;</span><span class="p">,</span> <span class="s1">&#39;vis_miles&#39;</span><span class="p">,</span> <span class="s1">&#39;uv&#39;</span><span class="p">,</span> <span class="s1">&#39;gust_mph&#39;</span><span class="p">,</span> <span class="s1">&#39;gust_kph&#39;</span><span class="p">]})</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="n">result_dict</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">return</span> <span class="n">result_dict</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="n">ReadTimeout</span><span class="p">,</span> <span class="n">ConnectTimeout</span><span class="p">):</span>
+
+            <span class="k">return</span> <span class="kc">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_all_columns_from_schema</span><span class="p">(</span><span class="n">source_schema</span><span class="p">:</span> <span class="n">StructType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function to get all columns that belong to the schema</span>
+
+<span class="sd">    Agrs:</span>
+<span class="sd">      - source_schema (StructType): schema for the dataframe</span>
+
+<span class="sd">    Output</span>
+<span class="sd">      - branches (list): List of columns</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">branches</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Function to analyze inner schema</p>
+<p>Args:
+  - schema (StructType): dataframe schema
+  - ancestor (list): list of ancerstors for nested schema</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">inner_get</span><span class="p">(</span><span class="n">schema</span><span class="p">:</span> <span class="n">StructType</span><span class="p">,</span> <span class="n">ancestor</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">ancestor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ancestor</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">schema</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="n">branch_path</span> <span class="o">=</span> <span class="n">ancestor</span> <span class="o">+</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">dataType</span><span class="p">,</span> <span class="n">StructType</span><span class="p">):</span>
+                <span class="n">inner_get</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">dataType</span><span class="p">,</span> <span class="n">branch_path</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">branches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">branch_path</span><span class="p">)</span>
+
+    <span class="n">inner_get</span><span class="p">(</span><span class="n">source_schema</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">branches</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Function to collapse columns</p>
+<p>Args:
+  - source_schema (StructType): schema for the dataframe
+  - column_filter (string): Filter for columns</p>
+<p>Output:
+  - _columns_to_select (list): List of columns for selecting</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">collapse_columns</span><span class="p">(</span><span class="n">source_schema</span><span class="p">:</span> <span class="n">StructType</span><span class="p">,</span>
+                  <span class="n">column_filter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">_columns_to_select</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">column_filter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">column_filter</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">_all_columns</span> <span class="o">=</span> <span class="n">get_all_columns_from_schema</span><span class="p">(</span><span class="n">source_schema</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">column_collection</span> <span class="ow">in</span> <span class="n">_all_columns</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">column_filter</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">column_collection</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">column_filter</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="n">select_column_collection</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;`</span><span class="si">%s</span><span class="s1">`&#39;</span> <span class="o">%</span> <span class="n">list_item</span> <span class="k">for</span> <span class="n">list_item</span> <span class="ow">in</span> <span class="n">column_collection</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">column_collection</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">_columns_to_select</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+              <span class="n">col</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">select_column_collection</span><span class="p">))</span>
+              <span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">column_collection</span><span class="p">))</span>
+              <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_columns_to_select</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="n">select_column_collection</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+    <span class="k">return</span> <span class="n">_columns_to_select</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
