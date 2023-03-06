@@ -35,19 +35,25 @@ conf.set("spark.sql.broadcastTimeout",  "3600")
 conf.set("spark.sql.autoBroadcastJoinThreshold",  "1073741824")
 
 # Initial configuration
-args = getResolvedOptions(sys.argv, ['JOB_NAME'])
+args = getResolvedOptions(sys.argv, ['JOB_NAME', 'ENVIRONMENT'])
 glueContext = GlueContext(SparkContext.getOrCreate(conf=conf))
 job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 
 
-# Reading environment variables
-aws_account_id = os.environ['AWS_ACCOUND_ID']
-aws_region = os.environ['AWS_REGION']
+# Options based on environment
+if args['ENVIRONMENT'] == 'Development':
+    aws_account_id = os.environ['AWS_ACCOUND_ID']
+    aws_region = os.environ['AWS_REGION']
+    s3_input_path = f's3://medium-post-{aws_account_id}-{aws_region}/worldcities.csv'
+    ingested_at = datetime.date.today().strftime("%Y-%m-%d")
+    s3_output_path = f's3://medium-post-{aws_account_id}-{aws_region}/weather-{ingested_at}'
+else:
+    # Here include options the production environment
+    pass
 
 
 # Calling the cities name
-s3_input_path = f's3://medium-post-{aws_account_id}-{aws_region}/worldcities.csv'
 ddf = glueContext.create_dynamic_frame.from_options(
                       connection_type='s3',
                       connection_options={'paths': [s3_input_path]},
@@ -97,8 +103,6 @@ print(df.printSchema())
 
 
 # Saving
-ingested_at = datetime.date.today().strftime("%Y-%m-%d")
-s3_output_path = f's3://medium-post-{aws_account_id}-{aws_region}/weather-{ingested_at}'
 datasink1 = glueContext.write_dynamic_frame.\
                     from_options(frame=DynamicFrame.fromDF(df,
                                                         glueContext,
