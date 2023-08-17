@@ -1,6 +1,6 @@
 # Overview
 
-This is the GitHub repo used for the Medium post [Using Docker containers for AWS Glue jobs local development](https://medium.com/p/68b283857a15/edit).
+This is the GitHub repo used for the Medium post [Using Docker containers for AWS Glue jobs local development]([https://medium.com/p/68b283857a15/edit](https://medium.com/globalwork-data-driven-world/using-docker-containers-for-aws-glue-jobs-local-development-68b283857a15)).
 
 # Additional info
 
